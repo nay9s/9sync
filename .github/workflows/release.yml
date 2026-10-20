@@ -1,0 +1,24 @@
+name: Publish plugin release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Check tag matches manifest
+        run: node -e "const m=require('./plugin/manifest.json');if(process.env.GITHUB_REF_NAME!=='v'+m.version)throw Error('Tag must match plugin manifest version')"
+      - run: npm ci
+      - run: npm test
+      - run: npm run package:plugin
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" artifacts/release/* --verify-tag --title "9sync $GITHUB_REF_NAME" --generate-notes

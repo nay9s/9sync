@@ -1,0 +1,50 @@
+name: Build and test
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run package:plugin
+      - name: Validate Compose configuration
+        env:
+          NINESYNC_DB_PASSWORD: ci-disposable-db-password
+          NINESYNC_SERVER_SECRET: ci-disposable-server-secret
+          NINESYNC_ADMIN_PASSWORD: ci-disposable-admin-password
+          NINESYNC_DOMAIN: sync.example.com
+        run: |
+          docker compose config --quiet
+          docker compose -f docker-compose.yml -f compose.https.yml config --quiet
+          for script in scripts/*.sh; do bash -n "$script"; done
+      - run: docker build -f server/Dockerfile -t nine-sync:ci .
+      - name: Test the complete Docker deployment
+        env:
+          NINESYNC_DB_PASSWORD: ci-disposable-db-password
+          NINESYNC_SERVER_SECRET: ci-disposable-server-secret
+          NINESYNC_ADMIN_PASSWORD: ci-disposable-admin-password
+        run: |
+          docker compose up -d --build --wait
+          node scripts/smoke-test.mjs
+          docker compose restart server
+          docker compose up -d --wait server
+      - name: Stop disposable CI containers
+        if: always()
+        env:
+          NINESYNC_DB_PASSWORD: ci-disposable-db-password
+          NINESYNC_SERVER_SECRET: ci-disposable-server-secret
+          NINESYNC_ADMIN_PASSWORD: ci-disposable-admin-password
+        run: docker compose down -v
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 9sync-plugin
+          path: artifacts/release/

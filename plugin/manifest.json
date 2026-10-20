@@ -1,0 +1,9 @@
+{
+  "id": "nine-sync",
+  "name": "9sync",
+  "version": "0.5.0",
+  "minAppVersion": "1.5.0",
+  "description": "Self-hosted realtime collaboration, vault sync, file version history, diffs, checkpoints and restore.",
+  "author": "9sync",
+  "isDesktopOnly": false
+}

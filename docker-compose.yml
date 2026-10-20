@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ninesync
+      POSTGRES_USER: ninesync
+      POSTGRES_PASSWORD: ${NINESYNC_DB_PASSWORD:?Generate .env with scripts/setup-env.sh}
+    volumes:
+      - nine_sync_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ninesync -d ninesync"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://ninesync:${NINESYNC_DB_PASSWORD:?Set NINESYNC_DB_PASSWORD in .env}@postgres:5432/ninesync
+      DATA_DIR: /app/data
+      NINESYNC_SERVER_SECRET: ${NINESYNC_SERVER_SECRET:?Set NINESYNC_SERVER_SECRET in .env}
+      NINESYNC_ADMIN_USERNAME: ${NINESYNC_ADMIN_USERNAME:-admin}
+      NINESYNC_ADMIN_PASSWORD: ${NINESYNC_ADMIN_PASSWORD:?Set NINESYNC_ADMIN_PASSWORD in .env (minimum 12 characters)}
+      NINESYNC_COOKIE_SECURE: ${NINESYNC_COOKIE_SECURE:-false}
+    ports:
+      - "127.0.0.1:${NINESYNC_PORT:-3001}:3001"
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+    volumes:
+      - nine_sync_blobs:/app/data
+
+volumes:
+  nine_sync_pg:
+  nine_sync_blobs:

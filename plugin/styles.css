@@ -1,0 +1,50 @@
+.nine-sync-status {
+  font-size: 0.85em;
+  opacity: 0.9;
+}
+.nine-sync-history-modal{width:min(1100px,95vw)}.nine-sync-history-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.nine-sync-history-toolbar input{flex:1;min-width:160px}.nine-sync-history-select{width:100%;max-width:100%;margin:8px 0}.nine-sync-history-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:20px}.nine-sync-history-list{max-height:55vh;overflow:auto}.nine-sync-history-item{display:block;width:100%;height:auto;text-align:left;padding:12px;margin:6px 0;white-space:normal;overflow-wrap:anywhere}.nine-sync-history-item strong,.nine-sync-history-item small,.nine-sync-history-item span{display:block;margin:4px 0}.nine-sync-history-item small{color:var(--text-muted)}.nine-sync-history-item.is-active{box-shadow:inset 3px 0 var(--interactive-accent);background:var(--background-modifier-hover)}.nine-sync-history-detail{min-width:0}.nine-sync-diff{overflow:auto;max-height:45vh;font:12px/1.8 var(--font-monospace);padding:0}.nine-sync-diff span{display:block;min-width:max-content;padding:0 8px;white-space:pre}.nine-sync-diff-added{background:rgba(40,160,90,.15);color:var(--text-success)}.nine-sync-diff-removed{background:rgba(210,65,65,.15);color:var(--text-error)}.nine-sync-diff-skip{color:var(--text-muted)}.nine-sync-history-error{color:var(--text-error)}.nine-sync-history-confirm{border:1px solid var(--background-modifier-border);border-radius:8px;padding:12px;margin-top:12px}@media(max-width:700px){.nine-sync-history-layout{grid-template-columns:minmax(0,1fr)}.nine-sync-history-list{max-height:200px}}
+
+.nine-sync-good {
+  color: var(--text-success);
+}
+
+.nine-sync-bad {
+  color: var(--text-error);
+}
+
+.nine-sync-help {
+  color: var(--text-muted);
+  margin-top: -0.35rem;
+}
+
+.nine-sync-remote-selection {
+  background: var(--nine-sync-selection-color, rgba(48, 188, 237, 0.2));
+  border-radius: 2px;
+}
+
+.nine-sync-remote-caret {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 1.25em;
+  border-left: 2px solid var(--nine-sync-cursor-color, #30bced);
+  margin-left: -1px;
+  vertical-align: text-bottom;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.nine-sync-remote-caret-label {
+  position: absolute;
+  left: -1px;
+  bottom: calc(100% + 2px);
+  background: var(--nine-sync-cursor-color, #30bced);
+  color: #111;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
+  padding: 1px 4px;
+  border-radius: 3px 3px 3px 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}

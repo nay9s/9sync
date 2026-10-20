@@ -1,0 +1,20 @@
+{
+  "name": "nine-sync",
+  "private": true,
+  "version": "0.5.0",
+  "workspaces": [
+    "plugin",
+    "server"
+  ],
+  "overrides": {
+    "yjs": "13.6.32"
+  },
+  "scripts": {
+    "build": "npm run build -w server && npm run build -w plugin",
+    "dev:server": "npm run dev -w server",
+    "dev:plugin": "npm run dev -w plugin",
+    "test": "npm test -w server",
+    "package:plugin": "npm run build -w plugin && node scripts/package-plugin.mjs",
+    "package:repo": "node scripts/package-repository.mjs"
+  }
+}

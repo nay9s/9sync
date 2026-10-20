@@ -1,0 +1,4 @@
+{$NINESYNC_DOMAIN} {
+    encode zstd gzip
+    reverse_proxy server:3001
+}
